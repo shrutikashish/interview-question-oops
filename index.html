@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript MCQ Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; background: #f4f4f4; }
+    #quiz-container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { margin-bottom: 1rem; }
+    .option { margin-bottom: 0.5rem; }
+    button { margin-top: 1rem; padding: 0.5rem 1rem; }
+    #result-container { display: none; margin-top: 2rem; }
+    .correct { color: green; }
+    .incorrect { color: red; }
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <div id="quiz-container">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <div id="explanation" style="margin-top: 1rem; color: blue;"></div>
+    <button id="checkBtn" onclick="checkAnswer()" style="display:none">Check Answer</button>
+    <div>f
+      <button onclick="prevQuestion()">Previous</button>
+      <button id="nextBtn" onclick="nextQuestion()" disabled>Next</button>
+    </div>
+    <p id="timer"></p>
+  </div>
+  <div id="result-container">
+    <h2>Test Complete</h2>
+    <p id="score"></p>
+    <ul id="answers-list"></ul>
+  </div>
+
+  <script>
+
+   const questions = [
+  // OBJECTS (1–5)
+  {
+    question: "What will be the output?\n\nconst user = { name: 'Alice', age: 25 };\nconsole.log(user['name']);",
+    options: ["undefined", "user", "Alice", "null"],
+    answer: 2,
+    explanation: "Bracket notation allows accessing object properties via string keys. 'user['name']' returns 'Alice'."
+  },
+  {
+    question: "Which of the following correctly checks if an object has a specific property?",
+    options: [
+      "object.property == undefined",
+      "'property' in object",
+      "object.hasOwnProperty == 'property'",
+      "object.property.exists"
+    ],
+    answer: 1,
+    explanation: "The 'in' operator is the most reliable way to check if a property exists in an object (own or inherited)."
+  },
+  {
+    question: "Which method converts an object to a JSON string?",
+    options: ["JSON.parse()", "JSON.stringify()", "toString()", "convertToJSON()"],
+    answer: 1,
+    explanation: "JSON.stringify() takes a JavaScript object and converts it to a JSON string."
+  },
+  {
+    question: "What will be the result?\n\nconst obj = {}; obj.name = 'John'; delete obj.name; console.log(obj.name);",
+    options: ["John", "undefined", "null", "Throws error"],
+    answer: 1,
+    explanation: "The 'delete' operator removes the 'name' property. Accessing it afterwards returns 'undefined'."
+  },
+  {
+    question: "Which statement is true about objects in JavaScript?",
+    options: [
+      "Objects can only hold string values.",
+      "An object cannot contain another object.",
+      "Objects store key-value pairs.",
+      "Object keys must be numbers."
+    ],
+    answer: 2,
+    explanation: "JavaScript objects are collections of key-value pairs and can store any data type."
+  },
+
+  // OBJECT LITERALS (6–10)
+  {
+    question: "What is the purpose of shorthand property names in object literals?",
+    options: [
+      "To define global variables",
+      "To reference functions",
+      "To assign variable names as keys automatically",
+      "To create class instances"
+    ],
+    answer: 2,
+    explanation: "In shorthand, if key and variable names are the same, you can write only the variable name."
+  },
+  {
+    question: "What is the output?\n\nlet x = 10;\nlet obj = { x };\nconsole.log(obj.x);",
+    options: ["undefined", "x", "null", "10"],
+    answer: 3,
+    explanation: "This uses shorthand property notation, so 'x' becomes a key with value 10."
+  },
+  {
+    question: "Which syntax creates an object using object literal notation?",
+    options: [
+      "let obj = Object.create();",
+      "let obj = { name: 'Tom', age: 30 };",
+      "let obj = new Object();",
+      "let obj = obj();"
+    ],
+    answer: 1,
+    explanation: "Object literal syntax uses curly braces to directly define properties."
+  },
+  {
+    question: "What is the result?\n\nlet obj = {name: 'Amy', age: 25};\nconsole.log(Object.keys(obj));",
+    options: [
+      "['Amy', 25]",
+      "['name', 'age']",
+      "[name: 'Amy', age: 25]",
+      "['obj']"
+    ],
+    answer: 1,
+    explanation: "Object.keys() returns an array of the object's property names."
+  },
+  {
+    question: "Which of the following is NOT a valid object literal key?",
+    options: ["'first-name'", "42", "null", "'class'"],
+    answer: 2,
+    explanation: "Keys must be strings or symbols. `null` is not valid as a key in an object literal."
+  },
+
+  // FACTORIES (11–14)
+  {
+    question: "What is a factory function in JavaScript?",
+    options: [
+      "A class that produces objects",
+      "A function that returns a new object",
+      "An object that stores multiple functions",
+      "A built-in JavaScript function"
+    ],
+    answer: 1,
+    explanation: "A factory function is a function that returns a new object when called."
+  },
+  {
+    question: "What will be the output?\n\nfunction createCar(make) { return { make }; }\nconsole.log(createCar('Tesla').make);",
+    options: ["undefined", "null", "Tesla", "createCar"],
+    answer: 2,
+    explanation: "The factory function returns an object with the property 'make'."
+  },
+  {
+    question: "Which syntax defines a factory function correctly?",
+    options: [
+      "function factory() { new this(); }",
+      "let factory = { return {} }",
+      "function factory() { return { name: 'default' }; }",
+      "new factory()"
+    ],
+    answer: 2,
+    explanation: "A factory function returns a plain object when invoked."
+  },
+  {
+    question: "What is the main benefit of using factory functions?",
+    options: [
+      "They mutate global objects",
+      "They eliminate the need for object literals",
+      "They enable reusable object creation logic",
+      "They avoid prototypes"
+    ],
+    answer: 2,
+    explanation: "Factory functions help create multiple instances of objects with shared logic."
+  },
+
+  // CONSTRUCTORS (15–20)
+  {
+    question: "Which syntax defines a constructor function?",
+    options: [
+      "function User() { this.name = 'Tom'; }",
+      "const User = { name: 'Tom' };",
+      "User => this.name = 'Tom'",
+      "class User() = { name: 'Tom' }"
+    ],
+    answer: 0,
+    explanation: "Constructor functions use 'this' to assign properties and are invoked using 'new'."
+  },
+  {
+    question: "What is the output?\n\nfunction Person(name) { this.name = name; }\nconst p = new Person('Eve');\nconsole.log(p.name);",
+    options: ["undefined", "Eve", "name", "Person"],
+    answer: 1,
+    explanation: "The constructor assigns 'name' to the instance via 'this'."
+  },
+  {
+    question: "What happens if you call a constructor without 'new'?",
+    options: [
+      "It returns undefined",
+      "It still creates an object",
+      "It binds 'this' to the global object",
+      "It throws an error"
+    ],
+    answer: 2,
+    explanation: "Without 'new', 'this' refers to the global object (in non-strict mode)."
+  },
+  {
+    question: "How do you instantiate an object from a constructor function?",
+    options: [
+      "Person.create('Tom')",
+      "new Person('Tom')",
+      "Person = new('Tom')",
+      "Person('Tom')"
+    ],
+    answer: 1,
+    explanation: "The 'new' keyword is required to create an instance from a constructor function."
+  },
+  {
+    question: "What is the default value of the constructor property in an object created via constructor?",
+    options: ["Function", "null", "Constructor", "The constructor function itself"],
+    answer: 3,
+    explanation: "The constructor property points back to the function used to create the object."
+  },
+  {
+    question: "What does this code print?\n\nfunction Car() {}\nconst myCar = new Car();\nconsole.log(myCar.constructor === Car);",
+    options: ["true", "false", "undefined", "Error"],
+    answer: 0,
+    explanation: "The 'constructor' property of the object points to the function that created it."
+  },
+
+  // FUNCTIONS ARE OBJECTS (21–25)
+  {
+    question: "In JavaScript, functions are also:",
+    options: ["Strings", "Primitives", "Objects", "Arrays"],
+    answer: 2,
+    explanation: "Functions in JavaScript are first-class objects and can have properties and methods."
+  },
+  {
+    question: "What is the output?\n\nfunction greet() {}\ngreet.lang = 'en';\nconsole.log(greet.lang);",
+    options: ["undefined", "greet", "en", "Throws Error"],
+    answer: 2,
+    explanation: "You can add custom properties to functions because they are objects."
+  },
+  {
+    question: "What is a key benefit of functions being objects?",
+    options: [
+      "They can only run once",
+      "They can store state via properties",
+      "They cannot be passed around",
+      "They are not callable"
+    ],
+    answer: 1,
+    explanation: "Functions can have properties and can maintain state between calls if used carefully."
+  },
+  {
+    question: "What is true about JavaScript functions?",
+    options: [
+      "They cannot return other functions",
+      "They are not objects",
+      "They can be used as constructors",
+      "They cannot be passed to variables"
+    ],
+    answer: 2,
+    explanation: "Functions can be used as constructors with the 'new' keyword."
+  },
+  {
+    question: "Which of the following is a valid way to create a function?",
+    options: [
+      "function = greet() {}",
+      "var greet = function() {}",
+      "create function greet() {}",
+      "function := greet() {}"
+    ],
+    answer: 1,
+    explanation: "Function expressions assign a function to a variable like any other object."
+  },
+  {
+    question: "What is the output?\n\nlet a = { name: 'Tom' };\nlet b = a;\nb.name = 'Jerry';\nconsole.log(a.name);",
+    options: ["Tom", "Jerry", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "Objects are reference types. Changing 'b.name' also changes 'a.name' because both refer to the same object."
+  },
+  {
+    question: "What happens when primitive values are assigned to a new variable?",
+    options: [
+      "They are passed by reference",
+      "They are linked to the original",
+      "They are copied by value",
+      "They are converted to objects"
+    ],
+    answer: 2,
+    explanation: "Primitives are copied by value, meaning a new independent copy is created."
+  },
+  {
+    question: "What is the output?\n\nlet x = 10;\nlet y = x;\ny++;\nconsole.log(x);",
+    options: ["10", "11", "undefined", "ReferenceError"],
+    answer: 0,
+    explanation: "'y++' modifies the value of 'y', not 'x', since primitives are copied by value."
+  },
+  {
+    question: "What is the output?\n\nconst obj1 = { val: 1 };\nconst obj2 = { val: 1 };\nconsole.log(obj1 === obj2);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "Two objects are only equal if they reference the same memory. These are separate objects."
+  },
+  {
+    question: "How do reference types behave in function parameters?",
+    options: [
+      "They are copied deeply",
+      "They are passed by reference",
+      "They are immutable",
+      "They are converted to strings"
+    ],
+    answer: 1,
+    explanation: "Reference types (like objects) are passed by reference, so changes inside the function affect the original."
+  },
+
+  // ADDING OR REMOVING PROPERTIES (31–35)
+  {
+    question: "How do you add a property to an existing object?",
+    options: [
+      "Using let only",
+      "obj.property = value;",
+      "You cannot add properties to an object",
+      "With Object.freeze()"
+    ],
+    answer: 1,
+    explanation: "You can directly assign a new key to an object using dot or bracket notation."
+  },
+  {
+    question: "What is the output?\n\nconst obj = {};\nobj['name'] = 'John';\nconsole.log(obj.name);",
+    options: ["undefined", "John", "name", "Throws error"],
+    answer: 1,
+    explanation: "Using bracket notation to add a property is equivalent to dot notation. Outputs 'John'."
+  },
+  {
+    question: "Which operator is used to remove a property from an object?",
+    options: ["remove", "clear", "delete", "unset"],
+    answer: 2,
+    explanation: "The 'delete' operator removes a property from an object."
+  },
+  {
+    question: "What is the output?\n\nconst user = { age: 30 };\ndelete user.age;\nconsole.log(user.age);",
+    options: ["30", "undefined", "null", "Throws error"],
+    answer: 1,
+    explanation: "'delete' removes the 'age' property, so accessing it afterwards returns 'undefined'."
+  },
+  {
+    question: "Which of the following prevents any property from being added to an object?",
+    options: ["Object.seal()", "Object.preventExtensions()", "Object.freeze()", "All of the above"],
+    answer: 3,
+    explanation: "All three methods restrict object extensibility, but to different extents."
+  },
+
+  // ENUMERATING PROPERTIES (36–40)
+  {
+    question: "Which method returns an array of an object's own enumerable property names?",
+    options: ["Object.keys()", "Object.values()", "Object.entries()", "Object.toString()"],
+    answer: 0,
+    explanation: "'Object.keys()' returns the keys of enumerable properties owned by the object."
+  },
+  {
+    question: "What will be printed?\n\nconst user = { name: 'Tom', age: 25 };\nfor (let key in user) { console.log(key); }",
+    options: ["Tom 25", "name age", "user", "undefined"],
+    answer: 1,
+    explanation: "'for...in' loop iterates over all enumerable properties, including inherited ones."
+  },
+  {
+    question: "Which statement is true about Object.entries()?",
+    options: [
+      "It returns an object",
+      "It returns an array of [key, value] pairs",
+      "It only works with arrays",
+      "It returns only numeric keys"
+    ],
+    answer: 1,
+    explanation: "'Object.entries()' returns an array of key-value pairs as subarrays."
+  },
+  {
+    question: "How can you check whether a property is an own property?",
+    options: ["'key' in obj", "obj.hasOwnProperty('key')", "obj.key != null", "typeof obj.key"],
+    answer: 1,
+    explanation: "hasOwnProperty checks if a property exists directly on the object and not in the prototype chain."
+  },
+  {
+    question: "Which method lists all property names including non-enumerable ones?",
+    options: ["Object.keys()", "Object.getOwnPropertyNames()", "Object.entries()", "Reflect.ownKeys()"],
+    answer: 1,
+    explanation: "'Object.getOwnPropertyNames()' lists both enumerable and non-enumerable property names."
+  },
+
+  // ABSTRACTION (41–45)
+  {
+    question: "What is abstraction in JavaScript?",
+    options: [
+      "Hiding internal properties and exposing only what's necessary",
+      "Making all properties public",
+      "Extending built-in objects",
+      "Avoiding use of constructors"
+    ],
+    answer: 0,
+    explanation: "Abstraction is the practice of exposing only relevant data and hiding implementation details."
+  },
+  {
+    question: "How can abstraction be implemented in JavaScript?",
+    options: [
+      "Using 'private' keyword",
+      "Using closures or Symbols",
+      "Using getters only",
+      "Using switch statements"
+    ],
+    answer: 1,
+    explanation: "Closures and Symbols are common ways to hide details and simulate abstraction."
+  },
+  {
+    question: "Which of the following is an abstraction?",
+    options: [
+      "Accessing a method without knowing its implementation",
+      "Reading a variable value",
+      "Assigning a string",
+      "Declaring a function"
+    ],
+    answer: 0,
+    explanation: "Calling a method without knowing how it works internally is abstraction in practice."
+  },
+  {
+    question: "What will be the result?\n\nfunction BankAccount(balance) {\n  let _balance = balance;\n  this.getBalance = function() { return _balance; }\n}\nconst acc = new BankAccount(100);\nconsole.log(acc._balance);",
+    options: ["100", "undefined", "Throws Error", "null"],
+    answer: 1,
+    explanation: "'_balance' is not exposed. It's private due to closure, not accessible directly."
+  },
+  {
+    question: "Which tool can simulate private members for abstraction?",
+    options: ["var", "this", "let inside function scope", "JSON.stringify()"],
+    answer: 2,
+    explanation: "Variables declared with 'let' inside constructor functions are scoped privately."
+  },
+
+  // PRIVATE PROPERTIES AND METHODS (46–50)
+  {
+    question: "Which of the following best represents a private field in modern JS class syntax?",
+    options: ["this._name", "let name", "#name", "name"],
+    answer: 2,
+    explanation: "Private fields in modern JavaScript classes are declared using the '#' symbol."
+  },
+  {
+    question: "What will happen?\n\nclass Person {\n  #age = 25;\n}\nconst p = new Person();\nconsole.log(p.#age);",
+    options: ["25", "undefined", "Throws SyntaxError", "null"],
+    answer: 2,
+    explanation: "Private fields cannot be accessed outside the class directly. SyntaxError is thrown."
+  },
+  {
+    question: "How can you simulate a private method?",
+    options: [
+      "Declare with let inside a function",
+      "Use a public function",
+      "Attach it to this",
+      "Use global functions"
+    ],
+    answer: 0,
+    explanation: "Functions declared with 'let' inside a constructor or closure are private to that scope."
+  },
+  {
+    question: "Why use private properties?",
+    options: [
+      "To reduce performance",
+      "To protect internal logic",
+      "To make all data public",
+      "To enforce inheritance"
+    ],
+    answer: 1,
+    explanation: "Private properties hide internal state and protect integrity of the object."
+  },
+  {
+    question: "Which keyword is required to access private class fields inside a method?",
+    options: ["this", "#", "private", "new"],
+    answer: 0,
+    explanation: "Private fields are accessed within class methods using 'this.#fieldName'."
+  },
+   {
+    question: "What is the output?\n\nfunction Animal() {}\nAnimal.prototype.eat = function() { return 'eating'; };\nconst dog = new Animal();\nconsole.log(dog.eat());",
+    options: ["undefined", "Throws Error", "eating", "null"],
+    answer: 2,
+    explanation: "The method 'eat' is inherited from Animal's prototype. 'dog.eat()' works as expected."
+  },
+  {
+    question: "How does JavaScript implement inheritance?",
+    options: [
+      "Class-based chaining",
+      "Prototype chaining",
+      "Interface extension",
+      "Function wrapping"
+    ],
+    answer: 1,
+    explanation: "JavaScript uses prototype chaining to implement inheritance between objects."
+  },
+  {
+    question: "What is the result?\n\nfunction Parent() {}\nfunction Child() {}\nChild.prototype = new Parent();\nconst obj = new Child();\nconsole.log(obj instanceof Parent);",
+    options: ["true", "false", "Throws error", "undefined"],
+    answer: 0,
+    explanation: "Child inherits from Parent. 'obj instanceof Parent' is true due to prototype chain."
+  },
+  {
+    question: "What will be the output?\n\nfunction Parent() {}\nParent.prototype.say = function() { return 'hi'; };\nconst p = new Parent();\ndelete p.say;\nconsole.log(p.say());",
+    options: ["undefined", "Throws error", "hi", "null"],
+    answer: 2,
+    explanation: "The 'say' method is on the prototype, not the instance. Deleting it from instance has no effect."
+  },
+  {
+    question: "Which statement creates inheritance from Person to Employee?",
+    options: [
+      "Employee.prototype = Person.prototype;",
+      "Employee.__proto__ = Person;",
+      "Employee.prototype = new Person();",
+      "Employee.prototype.inherit = Person;"
+    ],
+    answer: 2,
+    explanation: "Assigning a new Person object to Employee.prototype creates the inheritance chain."
+  },
+
+  // PROTOTYPES AND PROTOTYPICAL INHERITANCE (56–60)
+  {
+    question: "What is the output?\n\nconst person = { greet() { return 'Hello'; } };\nconst student = Object.create(person);\nconsole.log(student.greet());",
+    options: ["Throws error", "undefined", "Hello", "null"],
+    answer: 2,
+    explanation: "student inherits from person via Object.create(), so 'greet' is accessible."
+  },
+  {
+    question: "What is Object.getPrototypeOf(obj) used for?",
+    options: [
+      "To clone an object",
+      "To check its constructor",
+      "To return its prototype",
+      "To create a new object"
+    ],
+    answer: 2,
+    explanation: "'Object.getPrototypeOf()' returns the prototype of the given object."
+  },
+  {
+    question: "What is the output?\n\nfunction A() {}\nA.prototype.val = 10;\nconst a = new A();\nA.prototype.val = 20;\nconsole.log(a.val);",
+    options: ["10", "20", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "a.val refers to the prototype, which was updated to 20 before access."
+  },
+  {
+    question: "What will happen?\n\nfunction A() {}\nA.prototype.val = 1;\nconst obj = new A();\nobj.val = 2;\ndelete obj.val;\nconsole.log(obj.val);",
+    options: ["undefined", "1", "2", "null"],
+    answer: 1,
+    explanation: "After deleting the instance property, it falls back to the prototype’s 'val' which is 1."
+  },
+  {
+    question: "Which method is used to set prototype manually?",
+    options: ["Object.create()", "Object.setPrototypeOf()", "Object.assign()", "Object.clone()"],
+    answer: 1,
+    explanation: "'Object.setPrototypeOf(obj, proto)' sets the prototype of an object directly."
+  },
+
+  // MULTI-LEVEL INHERITANCE (61–65)
+  {
+    question: "What is the output?\n\nfunction A() {}\nA.prototype.say = () => 'A';\nfunction B() {}\nB.prototype = new A();\nfunction C() {}\nC.prototype = new B();\nconst c = new C();\nconsole.log(c.say());",
+    options: ["A", "B", "C", "undefined"],
+    answer: 0,
+    explanation: "Multi-level inheritance through prototype chain gives C access to A’s method."
+  },
+  {
+    question: "Which chain is valid for multi-level inheritance?",
+    options: [
+      "Child.__proto__ = Parent",
+      "Child.prototype = new Parent()",
+      "Parent = new Child()",
+      "Child.prototype = Object.assign(Parent)"
+    ],
+    answer: 1,
+    explanation: "To inherit, assign the prototype of the child to a new Parent instance."
+  },
+  {
+    question: "What happens if a property is not found on object or its prototype?",
+    options: [
+      "Returns global object",
+      "Throws error",
+      "Returns undefined",
+      "Tries Object constructor"
+    ],
+    answer: 2,
+    explanation: "JavaScript returns 'undefined' if a property is not found in prototype chain."
+  },
+  {
+    question: "What is the last object in a prototype chain?",
+    options: ["null", "Object", "Function", "Undefined"],
+    answer: 0,
+    explanation: "Every prototype chain ends with 'null', signifying no further prototype."
+  },
+  {
+    question: "What is the output?\n\nfunction A() {}\nfunction B() {}\nB.prototype = new A();\nconsole.log(B.prototype instanceof A);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "B.prototype is an instance of A, making this statement true."
+  },
+
+  // PROPERTY DESCRIPTORS (66–67)
+  {
+    question: "Which method provides property descriptors of an object?",
+    options: [
+      "Object.describe()",
+      "Object.getOwnPropertyDescriptors()",
+      "Object.getDetails()",
+      "Object.inspect()"
+    ],
+    answer: 1,
+    explanation: "Object.getOwnPropertyDescriptors() returns all property descriptors of an object."
+  },
+  {
+    question: "What is a configurable descriptor?",
+    options: [
+      "Allows property to be accessed",
+      "Allows property to be modified",
+      "Allows property to be deleted or reconfigured",
+      "Sets property to non-enumerable"
+    ],
+    answer: 2,
+    explanation: "Configurable: true means the property can be deleted or reconfigured."
+  },
+
+  // CONSTRUCTOR PROTOTYPES (68–70)
+  {
+    question: "What does every function in JS automatically get?",
+    options: [
+      "prototype property",
+      "constructor",
+      "closure",
+      "getter"
+    ],
+    answer: 0,
+    explanation: "Functions (used as constructors) automatically get a prototype object."
+  },
+  {
+    question: "What is the output?\n\nfunction User() {}\nconsole.log(typeof User.prototype);",
+    options: ["object", "function", "undefined", "User"],
+    answer: 0,
+    explanation: "The 'prototype' property is an object provided automatically by functions."
+  },
+  {
+    question: "Why modify a constructor's prototype?",
+    options: [
+      "To add instance-only methods",
+      "To reduce memory use by sharing methods",
+      "To create private properties",
+      "To define static values"
+    ],
+    answer: 1,
+    explanation: "Adding methods to prototype saves memory since they are shared by all instances."
+  },
+
+  // PROTOTYPE VS INSTANCE MEMBERS (71–72)
+  {
+    question: "What is the output?\n\nfunction Car() { this.speed = 0; }\nCar.prototype.drive = function() { return 'driving'; };\nconst c = new Car();\nconsole.log(c.hasOwnProperty('drive'));",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "'drive' is in prototype, not directly in the instance. So hasOwnProperty returns false."
+  },
+  {
+    question: "Which method is part of the prototype, not instance?",
+    options: [
+      "this.name = 'Tom'",
+      "this.age = 30",
+      "Person.prototype.sayHello = function() {}",
+      "let height = 6"
+    ],
+    answer: 2,
+    explanation: "Prototype methods are defined on the constructor’s prototype property."
+  },
+
+  // ITERATING PROTOTYPE MEMBERS (73–74)
+  {
+    question: "What will be printed?\n\nfunction A(){}\nA.prototype.run = () => {};\nconst a = new A();\nfor (let key in a) console.log(key);",
+    options: ["run", "nothing", "undefined", "error"],
+    answer: 0,
+    explanation: "'for...in' loops include prototype properties that are enumerable."
+  },
+  {
+    question: "How to get only instance members?",
+    options: [
+      "Object.keys(obj)",
+      "for...in loop",
+      "Object.getPrototypeOf()",
+      "obj instanceof Object"
+    ],
+    answer: 0,
+    explanation: "'Object.keys()' only returns own (instance) enumerable properties."
+  },
+
+  // AVOID EXTENDING BUILT-IN OBJECTS (75)
+  {
+    question: "Why should you avoid extending built-in prototypes like Array or Object?",
+    options: [
+      "It increases performance",
+      "It improves inheritance",
+      "It can cause conflicts with future versions and libraries",
+      "It is necessary for OOP"
+    ],
+    answer: 2,
+    explanation: "Modifying built-ins can lead to unexpected bugs, compatibility issues, and is considered bad practice."
+  },
+  {
+    question: "What is the output?\n\nconst animal = { eats: true };\nconst dog = Object.create(animal);\ndog.barks = true;\nconsole.log(dog.eats);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "dog inherits from animal using Object.create(). So 'eats' is accessible."
+  },
+  {
+    question: "Which method is commonly used to create custom prototypal inheritance?",
+    options: ["new Object()", "Object.create()", "Object.assign()", "Object.extend()"],
+    answer: 1,
+    explanation: "Object.create() is used to manually create an object that inherits from another."
+  },
+  {
+    question: "What is true about Object.create()?",
+    options: [
+      "It copies all properties",
+      "It creates a deep clone",
+      "It sets the prototype of the new object",
+      "It replaces prototype chains"
+    ],
+    answer: 2,
+    explanation: "Object.create(proto) sets the given object as the prototype of the new one."
+  },
+  {
+    question: "What is the prototype of an object created via Object.create(null)?",
+    options: ["Object.prototype", "null", "undefined", "Window"],
+    answer: 1,
+    explanation: "Object.create(null) creates a truly blank object with no prototype chain."
+  },
+  {
+    question: "Which of the following will make object `b` inherit from object `a`?",
+    options: [
+      "b = Object.extend(a)",
+      "b.prototype = a",
+      "b = Object.create(a)",
+      "b = new a()"
+    ],
+    answer: 2,
+    explanation: "Object.create(a) returns a new object whose prototype is 'a'."
+  },
+
+  // RESETTING CONSTRUCTOR (81–83)
+  {
+    question: "What will be the output?\n\nfunction A() {}\nfunction B() {}\nB.prototype = new A();\nB.prototype.constructor = B;\nconst b = new B();\nconsole.log(b.constructor === B);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "Resetting the constructor ensures that instances of B show B as their constructor."
+  },
+  {
+    question: "Why is it important to reset the constructor after setting prototype?",
+    options: [
+      "To prevent memory leaks",
+      "To keep the constructor reference correct",
+      "To enable polymorphism",
+      "To add methods to Object"
+    ],
+    answer: 1,
+    explanation: "By default, constructor points to A after 'B.prototype = new A();'. Resetting ensures correct identity."
+  },
+  {
+    question: "What is the default constructor of a prototype after reassignment?",
+    options: ["Object", "Function", "The last assigned constructor", "The constructor of the prototype object"],
+    answer: 3,
+    explanation: "After assigning a new object to prototype, its constructor defaults to that of the prototype object."
+  },
+
+  // CALLING SUPER CONSTRUCTOR (84–86)
+  {
+    question: "How can you call a super constructor from a child constructor?",
+    options: [
+      "super();",
+      "Parent.constructor();",
+      "Parent.call(this);",
+      "this.Parent();"
+    ],
+    answer: 2,
+    explanation: "In pre-class syntax, 'Parent.call(this)' is used to call the super constructor with correct context."
+  },
+  {
+    question: "What is the output?\n\nfunction Parent(name) { this.name = name; }\nfunction Child(name) { Parent.call(this, name); }\nconst c = new Child('Leo');\nconsole.log(c.name);",
+    options: ["undefined", "Parent", "Leo", "null"],
+    answer: 2,
+    explanation: "The 'Parent.call(this, name)' copies the property to 'this' inside Child."
+  },
+  {
+    question: "Why is calling the super constructor important in inheritance?",
+    options: [
+      "To inherit prototype methods",
+      "To share memory",
+      "To copy instance properties correctly",
+      "To prevent overriding"
+    ],
+    answer: 2,
+    explanation: "Calling the super constructor ensures that instance-specific properties are initialized."
+  },
+
+  // INTERMEDIATE FUNCTION INHERITANCE (87–89)
+  {
+    question: "Why use an intermediate function for inheritance?",
+    options: [
+      "To keep code DRY",
+      "To avoid calling parent constructor unnecessarily",
+      "To override built-in methods",
+      "To create multiple prototypes"
+    ],
+    answer: 1,
+    explanation: "Intermediate functions avoid executing the parent constructor when setting up inheritance."
+  },
+  {
+    question: "What does this pattern achieve?\n\nfunction Surrogate() {}\nSurrogate.prototype = Parent.prototype;\nChild.prototype = new Surrogate();",
+    options: [
+      "Shared constructor logic",
+      "Multi-level property merging",
+      "Inheritance without calling Parent",
+      "Method overriding"
+    ],
+    answer: 2,
+    explanation: "This pattern allows inheritance without running the Parent constructor."
+  },
+  {
+    question: "What is the benefit of intermediate surrogate constructor?",
+    options: [
+      "Reduces memory size",
+      "Avoids unwanted constructor execution",
+      "Ensures all static properties are copied",
+      "Speeds up loop iterations"
+    ],
+    answer: 1,
+    explanation: "Intermediate constructor helps in setting up inheritance chain without initializing Parent."
+  },
+
+  // METHOD OVERRIDING (90–92)
+  {
+    question: "What is method overriding in JS?",
+    options: [
+      "Creating a copy of prototype method",
+      "Replacing parent method with child implementation",
+      "Hiding global methods",
+      "Calling multiple constructors"
+    ],
+    answer: 1,
+    explanation: "Overriding means providing a new definition for a method that already exists in the prototype chain."
+  },
+  {
+    question: "What is the output?\n\nfunction A() {}\nA.prototype.say = function() { return 'A'; };\nfunction B() {}\nB.prototype = Object.create(A.prototype);\nB.prototype.say = function() { return 'B'; };\nconst b = new B();\nconsole.log(b.say());",
+    options: ["A", "B", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "Child method overrides parent method. The method in B’s prototype is used."
+  },
+  {
+    question: "Can you override a prototype method with an instance method?",
+    options: ["Yes", "No", "Only in strict mode", "Only with closures"],
+    answer: 0,
+    explanation: "Instance methods take precedence over prototype methods with the same name."
+  },
+
+  // POLYMORPHISM (93–95)
+  {
+    question: "What is polymorphism in JavaScript?",
+    options: [
+      "One function, many forms",
+      "Multiple inheritance",
+      "Changing variable types",
+      "Object composition"
+    ],
+    answer: 0,
+    explanation: "Polymorphism means objects can define their own versions of the same method."
+  },
+  {
+    question: "What is the output?\n\nclass Animal { speak() { return '...' } }\nclass Dog extends Animal { speak() { return 'Woof'; } }\nconst d = new Dog();\nconsole.log(d.speak());",
+    options: ["...", "undefined", "Woof", "Animal"],
+    answer: 2,
+    explanation: "The 'speak' method is overridden in Dog. So Dog's version is used."
+  },
+  {
+    question: "Which of the following is a real-world use of polymorphism?",
+    options: [
+      "Different shapes having a 'draw' method",
+      "Objects referring to the same class",
+      "Static method inheritance",
+      "Global method extensions"
+    ],
+    answer: 0,
+    explanation: "Different subclasses (e.g., Circle, Square) implementing their own 'draw' method is polymorphism."
+  },
+
+  // WHEN TO USE INHERITANCE (96–98)
+  {
+    question: "When is inheritance appropriate?",
+    options: [
+      "When classes are unrelated",
+      "To reuse and specialize common behavior",
+      "To make code longer",
+      "To replace arrays"
+    ],
+    answer: 1,
+    explanation: "Use inheritance when one class is a specialized form of another."
+  },
+  {
+    question: "Which principle does inheritance promote?",
+    options: ["Tight coupling", "Code duplication", "Code reuse", "Memory expansion"],
+    answer: 2,
+    explanation: "Inheritance promotes code reuse by allowing subclasses to inherit common functionality."
+  },
+  {
+    question: "What is the danger of improper inheritance?",
+    options: [
+      "Loose typing",
+      "Broken encapsulation and tight coupling",
+      "Prototype chain shortening",
+      "Better performance"
+    ],
+    answer: 1,
+    explanation: "Improper use of inheritance may cause tight coupling and reduce code maintainability."
+  },
+
+  // MIXINS (99–100)
+  {
+    question: "What is a mixin in JavaScript?",
+    options: [
+      "A class constructor",
+      "A way to access prototypes",
+      "A function that adds methods to objects",
+      "An extension of inheritance"
+    ],
+    answer: 2,
+    explanation: "Mixins allow composition by copying reusable methods/properties into objects."
+  },
+  {
+    question: "What is the output?\n\nconst canSwim = {\n  swim() { return 'swimming'; }\n};\nconst person = {};\nObject.assign(person, canSwim);\nconsole.log(person.swim());",
+    options: ["undefined", "Throws error", "swimming", "null"],
+    answer: 2,
+    explanation: "Mixins use Object.assign() to copy behaviors into objects."
+  },
+  {
+    question: "What is the output?\n\nconst person = {\n  name: 'Alice',\n  greet() { return 'Hi, ' + this.name; }\n};\nconsole.log(person.greet());",
+    options: ["Hi, Alice", "Hi, undefined", "Hi, person", "Throws error"],
+    answer: 0,
+    explanation: "'this.name' correctly refers to 'Alice' inside the object method."
+  },
+  {
+    question: "What is the output?\n\nconst obj = {};\nobj['1'] = 'one';\nobj[1] = 'two';\nconsole.log(obj['1']);",
+    options: ["one", "two", "undefined", "1"],
+    answer: 1,
+    explanation: "Object keys are always strings. So '1' and 1 are the same key; value is overwritten."
+  },
+  {
+    question: "What will be printed?\n\nconst user = { age: 25 };\ndelete user.age;\nconsole.log('age' in user);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "'delete' removes the key, so 'in' returns false."
+  },
+  {
+    question: "What is the output?\n\nconst user = {};\nuser.name = 'Bob';\nuser.age = 30;\ndelete user.name;\nconsole.log(user.name);",
+    options: ["Bob", "undefined", "30", "null"],
+    answer: 1,
+    explanation: "'delete user.name' removes the property. So 'user.name' is now undefined."
+  },
+  {
+    question: "What is the output?\n\nconst obj = { a: 1 };\nObject.freeze(obj);\nobj.b = 2;\nconsole.log(obj.b);",
+    options: ["2", "undefined", "Throws error", "null"],
+    answer: 1,
+    explanation: "Object is frozen, so new properties cannot be added. 'b' is undefined."
+  },
+
+  // FACTORIES & CONSTRUCTORS (106–110)
+  {
+    question: "What is the output?\n\nfunction createUser(name) {\n  return { name, greet() { return 'Hi ' + this.name; } };\n}\nconst u = createUser('Leo');\nconsole.log(u.greet());",
+    options: ["Hi Leo", "undefined", "Hi", "Throws error"],
+    answer: 0,
+    explanation: "Factory function returns object with working method using closure."
+  },
+  {
+    question: "What is the output?\n\nfunction Car() {\n  this.make = 'Toyota';\n}\nconst c = new Car();\nconsole.log(c.make);",
+    options: ["Toyota", "undefined", "null", "Throws error"],
+    answer: 0,
+    explanation: "'new Car()' invokes the constructor and returns an object with 'make'."
+  },
+  {
+    question: "What will happen?\n\nfunction Animal(name) {\n  this.name = name;\n}\nAnimal.prototype.speak = function() { return this.name + ' speaks'; };\nconst cat = new Animal('Kitty');\nconsole.log(cat.speak());",
+    options: ["Kitty speaks", "undefined", "name speaks", "Throws error"],
+    answer: 0,
+    explanation: "The instance inherits the prototype method and uses its own 'name'."
+  },
+  {
+    question: "What is the output?\n\nfunction Box() {\n  this.type = 'Wood';\n}\nBox.prototype.type = 'Plastic';\nconst b = new Box();\nconsole.log(b.type);",
+    options: ["Wood", "Plastic", "undefined", "null"],
+    answer: 0,
+    explanation: "Instance property 'type' shadows prototype property."
+  },
+  {
+    question: "What will be printed?\n\nfunction Dog() {}\nDog.prototype.bark = function() { return 'Woof'; };\nconst d = new Dog();\nconsole.log(d.hasOwnProperty('bark'));",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "'bark' is inherited, not directly on the object, so 'hasOwnProperty' returns false."
+  },
+
+  // VALUE VS REFERENCE, ENUMERATION (111–115)
+  {
+    question: "What is the output?\n\nlet a = { n: 1 };\nlet b = a;\nb.n = 2;\nconsole.log(a.n);",
+    options: ["1", "2", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "Both 'a' and 'b' refer to the same object. Mutation affects both."
+  },
+  {
+    question: "Which of these loops iterates over inherited properties too?",
+    options: [
+      "Object.keys(obj)",
+      "Object.entries(obj)",
+      "for...in",
+      "Object.getOwnPropertyNames(obj)"
+    ],
+    answer: 2,
+    explanation: "'for...in' iterates over enumerable properties including prototype ones."
+  },
+  {
+    question: "What is the output?\n\nconst user = { name: 'Sam' };\nObject.defineProperty(user, 'age', { value: 30, enumerable: false });\nconsole.log(Object.keys(user));",
+    options: ["['name']", "['name', 'age']", "[]", "['age']"],
+    answer: 0,
+    explanation: "Non-enumerable properties are skipped by Object.keys()."
+  },
+  {
+    question: "What is the result?\n\nconst obj = Object.create({ x: 10 });\nobj.y = 20;\nconsole.log('x' in obj);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "'in' checks entire prototype chain, so 'x' is found."
+  },
+  {
+    question: "What does Object.hasOwn(obj, 'prop') return if 'prop' is inherited?",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "hasOwn only checks own properties. Inherited ones return false."
+  },
+
+  // ABSTRACTION, PRIVATE (116–120)
+  {
+    question: "What is the output?\n\nfunction Secret() {\n  let hidden = 42;\n  this.getHidden = function() { return hidden; }\n}\nconst s = new Secret();\nconsole.log(s.hidden);",
+    options: ["42", "undefined", "null", "Throws error"],
+    answer: 1,
+    explanation: "'hidden' is private due to closure. It's not exposed as a public property."
+  },
+  {
+    question: "What is the output?\n\nclass User {\n  #password = '1234';\n  getPassword() { return this.#password; }\n}\nconst u = new User();\nconsole.log(u.getPassword());",
+    options: ["1234", "undefined", "null", "Throws error"],
+    answer: 0,
+    explanation: "Private field can be accessed from inside the class via method."
+  },
+  {
+    question: "What will happen?\n\nclass Person {\n  #ssn = '123-45-6789';\n}\nconst p = new Person();\nconsole.log(p.#ssn);",
+    options: ["undefined", "Throws error", "null", "123-45-6789"],
+    answer: 1,
+    explanation: "Private fields cannot be accessed outside class; SyntaxError is thrown."
+  },
+  {
+    question: "What is the output?\n\nfunction User(secret) {\n  let _secret = secret;\n  this.getSecret = () => _secret;\n}\nconst u = new User('hidden');\nconsole.log(u.getSecret());",
+    options: ["hidden", "undefined", "Throws error", "null"],
+    answer: 0,
+    explanation: "Closure keeps the '_secret' variable private and accessible via method."
+  },
+  {
+    question: "What is the benefit of private fields in a class?",
+    options: [
+      "They improve performance",
+      "They provide encapsulation",
+      "They increase inheritance depth",
+      "They make objects iterable"
+    ],
+    answer: 1,
+    explanation: "Private fields allow abstraction and encapsulation by hiding internal details."
+  },
+
+  // PROTOTYPE, INHERITANCE, OVERRIDING, POLYMORPHISM (121–130)
+  {
+    question: "What is the output?\n\nfunction A() {}\nA.prototype.say = () => 'A';\nfunction B() {}\nB.prototype = Object.create(A.prototype);\nconst b = new B();\nconsole.log(b.say());",
+    options: ["A", "B", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "B inherits from A, and 'say' method is accessed from A's prototype."
+  },
+  {
+    question: "What is the output?\n\nfunction Parent() {}\nParent.prototype.greet = () => 'Hello';\nfunction Child() {}\nChild.prototype = Object.create(Parent.prototype);\nChild.prototype.greet = () => 'Hi';\nconst c = new Child();\nconsole.log(c.greet());",
+    options: ["Hello", "Hi", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "Child overrides 'greet' method from Parent."
+  },
+  {
+    question: "What is the result?\n\nfunction A() {}\nfunction B() {}\nB.prototype = Object.create(A.prototype);\nB.prototype.constructor = B;\nconst b = new B();\nconsole.log(b.constructor === B);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "Constructor was reset after inheritance setup, so it correctly points to B."
+  },
+  {
+    question: "What is the output?\n\nfunction X() {}\nX.prototype.foo = function() { return 'X'; }\nfunction Y() {}\nY.prototype = Object.create(X.prototype);\nconst y = new Y();\nconsole.log(y.foo());",
+    options: ["X", "Y", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "Y inherits from X. 'foo' is available in prototype chain."
+  },
+  {
+    question: "What will be printed?\n\nfunction Shape() {}\nShape.prototype.draw = () => 'drawing';\nfunction Circle() {}\nCircle.prototype = Object.create(Shape.prototype);\nCircle.prototype.draw = () => 'circle drawing';\nconst c = new Circle();\nconsole.log(c.draw());",
+    options: ["drawing", "circle drawing", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "Method overridden in Circle prototype takes precedence."
+  },
+  {
+    question: "What is the result of polymorphism?\n\nfunction Animal() {}\nAnimal.prototype.speak = function() { return 'sound'; };\nfunction Dog() {}\nDog.prototype = Object.create(Animal.prototype);\nDog.prototype.speak = function() { return 'bark'; };\nconst a = new Animal();\nconst d = new Dog();\nconsole.log([a.speak(), d.speak()]);",
+    options: [["sound", "bark"], ["bark", "bark"], ["sound", "sound"], ["undefined", "undefined"]],
+    answer: 0,
+    explanation: "Each instance calls its own method. This is polymorphism in action."
+  },
+  {
+    question: "What is the output?\n\nfunction A() {}\nfunction B() {}\nB.prototype = new A();\nconst b = new B();\nconsole.log(b instanceof A);",
+    options: ["true", "false", "undefined", "Throws error"],
+    answer: 0,
+    explanation: "Since B.prototype is an instance of A, b is instanceof A."
+  },
+  {
+    question: "What will be the result?\n\nfunction Base() {}\nBase.prototype.doWork = () => 'working';\nfunction Derived() {}\nDerived.prototype = Object.create(Base.prototype);\nconst d = new Derived();\nconsole.log(d.doWork());",
+    options: ["working", "undefined", "null", "Throws error"],
+    answer: 0,
+    explanation: "Method inherited from Base prototype works correctly."
+  },
+  {
+    question: "What is the output?\n\nfunction A() { this.name = 'A'; }\nfunction B() { A.call(this); this.name = 'B'; }\nconst b = new B();\nconsole.log(b.name);",
+    options: ["A", "B", "undefined", "Throws error"],
+    answer: 1,
+    explanation: "A.call(this) copies A’s properties, then B overrides 'name'."
+  },
+  {
+    question: "What is the output?\n\nconst mixin = { run() { return 'running'; } };\nconst user = {};\nObject.assign(user, mixin);\nconsole.log(user.run());",
+    options: ["running", "undefined", "Throws error", "null"],
+    answer: 0,
+    explanation: "Mixin method is copied directly onto the object using Object.assign()."
+  }
+];
+
+  let current = 0;
+    let score = 0;
+    let answers = JSON.parse(localStorage.getItem('js_mcq_answers_oops')) || [];
+    let timeLeft = 9000; // 10 minutes
+
+    function renderQuestion() {
+      if (current >= questions.length) return showResults();
+      const q = questions[current];
+      document.getElementById('question').innerText = `Q${current + 1}: ${q.question}`;
+      const savedAnswer = answers[current]?.selected;
+      const optionsHTML = q.options.map((opt, i) => 
+        `<div class="option">
+          <label>
+            <input type="radio" name="opt" value="${i}" ${savedAnswer === opt ? 'checked disabled' : ''} onchange="enableCheck()"> ${opt}
+          </label>
+        </div>`
+      ).join('');
+      document.getElementById('options').innerHTML = optionsHTML;
+      document.getElementById('explanation').innerHTML = '';
+      document.getElementById('checkBtn').style.display = savedAnswer ? 'none' : 'inline-block';
+      document.getElementById('nextBtn').disabled = !savedAnswer;
+      if (savedAnswer) showExplanation(savedAnswer);
+    }
+
+    function enableCheck() {
+      document.getElementById('checkBtn').disabled = false;
+    }
+
+    function checkAnswer() {
+      const selected = document.querySelector('input[name="opt"]:checked');
+      if (!selected) return alert("Please select an option");
+
+      const selectedValue = parseInt(selected.value);
+      const q = questions[current];
+      const isCorrect = selectedValue === q.answer;
+      if (isCorrect) score++;
+
+      const answerRecord = {
+        question: q.question,
+        selected: q.options[selectedValue],
+        correct: q.options[q.answer],
+        explanation: q.explanation,
+        isCorrect
+      };
+      answers[current] = answerRecord;
+      localStorage.setItem('js_mcq_answers_oops', JSON.stringify(answers));
+      showExplanation(q.options[selectedValue]);
+      document.getElementById('checkBtn').style.display = 'none';
+      document.getElementById('nextBtn').disabled = false;
+      renderQuestion();
+    }
+
+    function showExplanation(userAnswer) {
+      const q = questions[current];
+      const isCorrect = userAnswer === q.options[q.answer];
+      document.getElementById('explanation').innerHTML = `<strong>${isCorrect ? 'Correct!' : 'Wrong!'}</strong><br>
+        Your answer: ${userAnswer}<br>
+        Correct answer: ${q.options[q.answer]}<br>
+        Explanation: ${q.explanation}`;
+    }
+
+    function nextQuestion() {
+      if (current < questions.length - 1) {
+        current++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function prevQuestion() {
+      if (current > 0) {
+        current--;
+        renderQuestion();
+      }
+    }
+
+    function showResults() {
+      score = answers.reduce((acc, curr, i) => {
+        const correct = questions[i].options[questions[i].answer];
+        return curr && curr.selected === correct ? acc + 1 : acc;
+      }, 0);
+
+      document.getElementById('quiz-container').style.display = 'none';
+      const resultContainer = document.getElementById('result-container');
+      resultContainer.style.display = 'block';
+      document.getElementById('score').innerText = `You scored ${score} out of ${questions.length}`;
+
+      const list = document.getElementById('answers-list');
+      list.innerHTML = '';
+      answers.forEach((ans, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>Q${i+1}:</strong> ${ans.question}<br>
+          <span class="${ans.isCorrect ? 'correct' : 'incorrect'}">
+            Your answer: ${ans.selected} (${ans.isCorrect ? 'Correct' : 'Wrong'})
+          </span><br>
+          Correct answer: ${ans.correct}<br>
+          Explanation: ${ans.explanation}`;
+        list.appendChild(li);
+      });
+    }
+
+    function updateTimer() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      document.getElementById('timer').innerText = `Time left: ${mins}:${secs < 10 ? '0' + secs : secs}`;
+      timeLeft--;
+      if (timeLeft < 0) showResults();
+    }
+
+    window.onload = function() {
+      renderQuestion();
+      setInterval(updateTimer, 1000);
+    };
+  </script>
+</body>
+</html>
